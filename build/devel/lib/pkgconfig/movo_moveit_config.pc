@@ -1,0 +1,8 @@
+prefix=/home/medrobotics/jack_ws/src/build/devel
+
+Name: movo_moveit_config
+Description: Description of movo_moveit_config
+Version: 0.3.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

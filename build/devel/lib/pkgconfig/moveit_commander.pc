@@ -1,0 +1,8 @@
+prefix=/home/medrobotics/jack_ws/src/build/devel
+
+Name: moveit_commander
+Description: Description of moveit_commander
+Version: 1.1.9
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

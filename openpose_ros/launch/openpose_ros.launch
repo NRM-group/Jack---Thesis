@@ -1,0 +1,7 @@
+<launch>
+
+    <node pkg="openpose_ros"
+        name="openpose_ros_demo" type="openpose_ros_demo" args="/kinect2/sd/image_color_rect /kinect2/sd/image_depth_rect 123 --compressed">
+    </node>
+
+</launch>

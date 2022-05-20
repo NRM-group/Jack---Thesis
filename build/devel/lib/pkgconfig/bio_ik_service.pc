@@ -1,0 +1,8 @@
+prefix=/home/medrobotics/jack_ws/src/build/devel
+
+Name: bio_ik_service
+Description: Description of bio_ik_service
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: roscpp moveit_core tf tf_conversions bio_ik bio_ik_msgs eigen_conversions

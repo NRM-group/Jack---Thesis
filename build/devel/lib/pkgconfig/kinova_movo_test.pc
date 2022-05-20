@@ -1,0 +1,8 @@
+prefix=/home/medrobotics/jack_ws/src/build/devel
+
+Name: kinova_movo_test
+Description: Description of kinova_movo_test
+Version: 0.3.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

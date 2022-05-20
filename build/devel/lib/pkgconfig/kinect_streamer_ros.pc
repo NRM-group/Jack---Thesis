@@ -1,0 +1,8 @@
+prefix=/home/medrobotics/jack_ws/src/build/devel
+
+Name: kinect_streamer_ros
+Description: Description of kinect_streamer_ros
+Version: 0.0.0
+Cflags: -I/home/medrobotics/jack_ws/src/kinect_streamer/kinect_streamer_ros/include
+Libs: -L${prefix}/lib -lkinect_streamer_ros
+Requires: roscpp rospy std_msgs

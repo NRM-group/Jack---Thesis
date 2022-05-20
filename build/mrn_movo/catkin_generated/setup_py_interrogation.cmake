@@ -1,0 +1,7 @@
+set(mrn_movo_SETUP_PY_SETUP_MODULE "distutils.core")
+set(mrn_movo_SETUP_PY_VERSION "0.0.0")
+set(mrn_movo_SETUP_PY_SCRIPTS "")
+set(mrn_movo_SETUP_PY_PACKAGES "mrn_movo")
+set(mrn_movo_SETUP_PY_PACKAGE_DIRS "src/mrn_movo")
+set(mrn_movo_SETUP_PY_MODULES "")
+set(mrn_movo_SETUP_PY_MODULE_DIRS "")

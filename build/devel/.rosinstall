@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/medrobotics/jack_ws/src/build/devel/setup.sh

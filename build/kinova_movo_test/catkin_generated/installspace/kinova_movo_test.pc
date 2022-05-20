@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: kinova_movo_test
+Description: Description of kinova_movo_test
+Version: 0.3.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
