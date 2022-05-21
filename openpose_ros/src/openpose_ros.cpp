@@ -129,7 +129,6 @@ void OpenPoseROS::loop() {
     if (img_color.data == NULL || img_depth.data == NULL) {
         return;
     }
-    cv::imshow("Depth", img_depth);
     cv::Mat img_thresh1;
     cv::Mat img_thresh2;
     cv::Mat img_thresh;
@@ -139,7 +138,6 @@ void OpenPoseROS::loop() {
     cv::bitwise_and(img_thresh1, img_thresh2, img_thresh);
     cv::Mat mask;
     img_thresh.convertTo(mask, CV_8UC1);
-    cv::imshow("Thresh", img_thresh);
 
     cv::Mat img_seg;
     cv::copyTo(img_color, img_seg, mask);
@@ -332,7 +330,7 @@ void OpenPoseROS::init() {
         (float)FLAGS_alpha_pose,
         (float)FLAGS_alpha_heatmap,
         FLAGS_part_to_show,
-        op::String(FLAGS_model_folder),
+        op::String("/home/medrobotics/openpose/models"),
         heatMapTypes, heatMapScaleMode,
         FLAGS_part_candidates,
         (float)FLAGS_render_threshold,
@@ -344,6 +342,7 @@ void OpenPoseROS::init() {
         (float)FLAGS_upsampling_ratio,
         enableGoogleLogging
     };
+    opWrapper.configure(wrapperStructPose);
     ros::NodeHandle nh_pointstamped_head = ros::NodeHandle();
     
     ros::NodeHandle nh_pointstamped_wrist_l = ros::NodeHandle();

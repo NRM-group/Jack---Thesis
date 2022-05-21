@@ -4,7 +4,7 @@ from platform import machine
 from sklearn.metrics import euclidean_distances
 import rospy
 import time
-from listener import left_arm_ik, left_arm_op_transform
+from mrn_movo.src.mrn_movo.wrist_publisher import left_arm_ik, left_arm_op_transform
 from scipy.spatial import distance
 from transitions import Machine
 import smach

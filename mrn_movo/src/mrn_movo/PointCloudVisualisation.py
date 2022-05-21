@@ -9,7 +9,7 @@ from mpl_toolkits import mplot3d
 from scipy.spatial import ConvexHull
 from pyvista import PolyData
 import open3d as o3d
-from listener import left_arm_listener
+from mrn_movo.src.mrn_movo.wrist_publisher import left_arm_listener
 
 def check_bounds(X_raw, n):
     return (X_raw[n, 0] >= 1 or X_raw[n, 0] <= -0.1 or X_raw[n, 1] >= 0.48 or X_raw[n, 1] <= -0.1 or X_raw[n, 2] >= 2 or X_raw[n, 2] <= 0.9) or (X_raw[n, 0] < 0.2 and X_raw[n, 1] > 0.4)

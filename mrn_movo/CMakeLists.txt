@@ -164,7 +164,9 @@ include_directories(
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 catkin_install_python(PROGRAMS 
-  src/mrn_movo/listener.py
+  src/mrn_movo/wrist_publisher.py
+  src/mrn_movo/chest_publisher.py
+  src/mrn_movo/pointToIK.py
   src/mrn_movo/baseToKinect.py
   src/mrn_movo/get_bio_ik_movo.py
   src/mrn_movo/PointCloudVisualisation.py
