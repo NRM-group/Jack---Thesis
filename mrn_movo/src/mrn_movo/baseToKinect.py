@@ -52,7 +52,8 @@ def T_base_kinect(torso_height, theta_pan, theta_tilt, odom):
     T_kinect2_rgb_optical_frame =   TransformMatrix(kinect2_rgb_optical_frame)
 
     # worldToRGBFrame = T_odom@T_base_link@T_base_chassis_link@T_linear_actuator_fixed_link@T_linear_actuator_link@T_pan_base_link@T_pan_link@T_tilt_link@T_kinect2_link@T_kinect2_ir_link@T_kinect2_rgb_link@T_kinect2_rgb_optical_frame
-    worldToIRFrame = T_odom@T_base_link@T_base_chassis_link@T_linear_actuator_fixed_link@T_linear_actuator_link@T_pan_base_link@T_pan_link@T_tilt_link@T_kinect2_link@T_kinect2_ir_link@T_kinect2_ir_optical_frame
+    # worldToIRFrame = T_odom@T_base_link@T_base_chassis_link@T_linear_actuator_fixed_link@T_linear_actuator_link@T_pan_base_link@T_pan_link@T_tilt_link@T_kinect2_link@T_kinect2_ir_link@T_kinect2_ir_optical_frame
+    worldToIRFrame = T_base_link@T_base_chassis_link@T_linear_actuator_fixed_link@T_linear_actuator_link@T_pan_base_link@T_pan_link@T_tilt_link@T_kinect2_link@T_kinect2_ir_link@T_kinect2_ir_optical_frame
     return(worldToIRFrame)
 
 def transform_from_csv(torso_height, theta_pan, theta_tilt):

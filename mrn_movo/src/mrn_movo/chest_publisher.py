@@ -23,13 +23,12 @@ chest_op_pub = rospy.Publisher('mrn_vision/openpose/movo/chest', Point, queue_si
 
 robot_state = None
     
-def chest_adapt(x,y,z):
-    if abs(x-1.5) > 0.1:
-        chest_move_to = x-1.5
-    else:
-        chest_move_to = 0
-    chest_move_pub.publish(chest_move_to)
-    return chest_move_to
+def chest_adapt(movo_op_chest_x,y,z, dist_chest, threshold):
+    delta_chest = movo_op_chest_x - dist_chest
+    delta_chest_adjusted = delta_chest + odom_listener().position.x
+    if abs(delta_chest) > threshold:
+        chest_move_pub.publish(delta_chest_adjusted)
+    # return chest_move_to
     
     
 def op_wrist_listener():
@@ -71,4 +70,4 @@ if __name__ == '__main__':
  
     while(True):
         chest_point = chest_op_transform_to_odom()
-        chest_adapt(chest_point[0], chest_point[1], chest_point[2])     
+        chest_adapt(chest_point[0], chest_point[1], chest_point[2], 1.5, 0.2)     
