@@ -13,7 +13,7 @@ from mrn_movo.baseToKinect import transformFromPoint
 
 
 
-rospy.init_node('mrn_movo', anonymous=True)
+rospy.init_node('mrn_movo_op_chest', anonymous=True)
 
 # Publish Positions to Move To
 chest_move_pub = rospy.Publisher('/mrn_movo/base/move_to', Float64, queue_size=1, latch=True)
@@ -70,4 +70,4 @@ if __name__ == '__main__':
  
     while(True):
         chest_point = chest_op_transform_to_odom()
-        chest_adapt(chest_point[0], chest_point[1], chest_point[2], 1.5, 0.2)     
+        chest_adapt(chest_point[0], chest_point[1], chest_point[2], 1.2, 0.2)     

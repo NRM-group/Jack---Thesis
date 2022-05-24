@@ -19,7 +19,7 @@ from mrn_movo.baseToKinect import transformFromPoint
 
 
 
-rospy.init_node('mrn_movo', anonymous=True)
+rospy.init_node('mrn_movo_openpose_to_ik', anonymous=True)
 rospy.wait_for_service("/bio_ik/get_bio_ik")
 get_bio_ik = rospy.ServiceProxy("/bio_ik/get_bio_ik", bio_ik_msgs.srv.GetIK)
 

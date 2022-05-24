@@ -16,7 +16,7 @@ import time
 start = time.time()
 
 
-rospy.init_node("bio_ik_movo")
+rospy.init_node("mrn_movo_bio_ik_left_side")
 
 rospy.wait_for_service("/bio_ik/get_bio_ik")
 get_bio_ik = rospy.ServiceProxy("/bio_ik/get_bio_ik", bio_ik_msgs.srv.GetIK)
