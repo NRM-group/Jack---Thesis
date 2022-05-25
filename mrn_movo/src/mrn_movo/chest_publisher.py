@@ -56,8 +56,7 @@ def chest_op_transform_to_odom():
     theta_tilt = head_listener().position[1]
     torso_height = linearAct_listener().position[0]
     op_xyz = op_chest_listener().point
-    odom = odom_listener()
-    chest_point = transformFromPoint(op_xyz, torso_height, theta_pan, theta_tilt, odom)
+    chest_point = transformFromPoint(op_xyz, torso_height, theta_pan, theta_tilt)
     op_chest_point = Point()
     op_chest_point.x = chest_point[0]
     op_chest_point.y = chest_point[1]
@@ -67,7 +66,8 @@ def chest_op_transform_to_odom():
     
             
 if __name__ == '__main__':
- 
+    
     while(True):
         chest_point = chest_op_transform_to_odom()
-        chest_adapt(chest_point[0], chest_point[1], chest_point[2], 1.2, 0.2)     
+        dist_chest = rospy.wait_for_message("/mrn_movo/chest_compensation/distance", Float64).data
+        chest_adapt(chest_point[0], chest_point[1], chest_point[2], dist_chest, 0.2)     

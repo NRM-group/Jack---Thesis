@@ -110,8 +110,7 @@ def wrist_op_transform_to_odom():
     theta_tilt = head_listener().position[1]
     torso_height = linearAct_listener().position[0]
     op_xyz = op_wrist_listener().point
-    odom = odom_listener()
-    wrist_point = transformFromPoint(op_xyz, torso_height, theta_pan, theta_tilt, odom)
+    wrist_point = transformFromPoint(op_xyz, torso_height, theta_pan, theta_tilt)
     op_wrist_point = Point()
     op_wrist_point.x = wrist_point[0]
     op_wrist_point.y = wrist_point[1]

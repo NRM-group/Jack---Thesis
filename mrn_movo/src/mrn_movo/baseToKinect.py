@@ -17,7 +17,7 @@ def TransformMatrix(input):
                          [            0,                                  0,                                  0,   1]])
     return transMat
 
-def T_base_kinect(torso_height, theta_pan, theta_tilt, odom):
+def T_base_kinect(torso_height, theta_pan, theta_tilt):
     base_link =                     np.array([0, 0, 0, 0, 0, 0])
     base_chassis_link =             np.array([0, 0, 0.0762, 0, 0, 0])
     linear_actuator_fixed_link =    np.array([0, 0, 0, 0, 0, 0])
@@ -36,8 +36,6 @@ def T_base_kinect(torso_height, theta_pan, theta_tilt, odom):
     kinect2_rgb_link =              np.array([0, -0.06175, 0, 0, 0, 0])                    
     kinect2_rgb_optical_frame =     np.array([0, 0, 0, -np.pi/2, 0, -np.pi/2]) 
 
-    odom_rot =                      q_to_R(odom.orientation)
-    T_odom =                        rot_to_T(odom_rot, odom.position)
     T_base_link =                   TransformMatrix(base_link)
     T_base_chassis_link =           TransformMatrix(base_chassis_link)
     T_linear_actuator_fixed_link =  TransformMatrix(linear_actuator_fixed_link)
@@ -75,7 +73,7 @@ def transform_from_csv(torso_height, theta_pan, theta_tilt):
     output = np.array(output)
     np.savetxt("data_transformed.csv", output[:,0,:], delimiter=",", fmt='%10.5f')
     
-def transformFromPoint(point, torso_height, theta_pan, theta_tilt, odom):
+def transformFromPoint(point, torso_height, theta_pan, theta_tilt):
     x = point.x
     y = point.y
     z = point.z
@@ -84,9 +82,8 @@ def transformFromPoint(point, torso_height, theta_pan, theta_tilt, odom):
                     [y],
                     [z],
                     [1]])
-    # print(odom)
-    transformed = T_base_kinect(torso_height, theta_pan, theta_tilt, odom)@pose
-    # output = np.transpose(transformed[0:3])
+
+    transformed = T_base_kinect(torso_height, theta_pan, theta_tilt)@pose
     output = transformed[0:3]
     return output
     

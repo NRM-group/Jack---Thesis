@@ -187,13 +187,15 @@ void OpenPoseROS::loop() {
             }   
         }
 #endif  
+        ros::Time time_ros = ros::Time::now();
+        
         geometry_msgs::Point p_head;
         p_head.x = x_arr[HEAD];
         p_head.y = y_arr[HEAD];
         p_head.z = z_arr[HEAD];
         geometry_msgs::PointStamped ps_head;
         ps_head.header.frame_id = "kinect2_ir_optical_frame";
-        ps_head.header.stamp = ros::Time::now();
+        ps_head.header.stamp = time_ros;
         ps_head.point = p_head;
 
         pub_pointstamped_head.publish(ps_head);
@@ -204,7 +206,7 @@ void OpenPoseROS::loop() {
         p_wrist_l.z = z_arr[WRST_L];
         geometry_msgs::PointStamped ps_wrist_l;
         ps_wrist_l.header.frame_id = "kinect2_ir_optical_frame";
-        ps_wrist_l.header.stamp = ros::Time::now();
+        ps_wrist_l.header.stamp = time_ros;
         ps_wrist_l.point = p_wrist_l;
 
         pub_pointstamped_wrist_l.publish(ps_wrist_l);
@@ -215,7 +217,7 @@ void OpenPoseROS::loop() {
         p_elbow_l.z = z_arr[ELBW_L];
         geometry_msgs::PointStamped ps_elbow_l;
         ps_elbow_l.header.frame_id = "kinect2_ir_optical_frame";
-        ps_elbow_l.header.stamp = ros::Time::now();
+        ps_elbow_l.header.stamp = time_ros;
         ps_elbow_l.point = p_elbow_l;
 
         pub_pointstamped_elbow_l.publish(ps_elbow_l);
@@ -226,7 +228,7 @@ void OpenPoseROS::loop() {
         p_shoulder_l.z = z_arr[SHDR_L];
         geometry_msgs::PointStamped ps_shoulder_l;
         ps_shoulder_l.header.frame_id = "kinect2_ir_optical_frame";
-        ps_shoulder_l.header.stamp = ros::Time::now();
+        ps_shoulder_l.header.stamp = time_ros;
         ps_shoulder_l.point = p_shoulder_l;
 
         pub_pointstamped_shoulder_l.publish(ps_shoulder_l);
@@ -237,7 +239,7 @@ void OpenPoseROS::loop() {
         p_wrist_r.z = z_arr[WRST_R];
         geometry_msgs::PointStamped ps_wrist_r;
         ps_wrist_r.header.frame_id = "kinect2_ir_optical_frame";
-        ps_wrist_r.header.stamp = ros::Time::now();
+        ps_wrist_r.header.stamp = time_ros;
         ps_wrist_r.point = p_wrist_r;
 
         pub_pointstamped_wrist_r.publish(ps_wrist_r);
@@ -248,7 +250,7 @@ void OpenPoseROS::loop() {
         p_elbow_r.z = z_arr[ELBW_R];
         geometry_msgs::PointStamped ps_elbow_r;
         ps_elbow_r.header.frame_id = "kinect2_ir_optical_frame";
-        ps_elbow_r.header.stamp = ros::Time::now();
+        ps_elbow_r.header.stamp = time_ros;
         ps_elbow_r.point = p_elbow_r;
 
         pub_pointstamped_elbow_r.publish(ps_elbow_r);
@@ -259,7 +261,7 @@ void OpenPoseROS::loop() {
         p_shoulder_r.z = z_arr[SHDR_R];
         geometry_msgs::PointStamped ps_shoulder_r;
         ps_shoulder_r.header.frame_id = "kinect2_ir_optical_frame";
-        ps_shoulder_r.header.stamp = ros::Time::now();
+        ps_shoulder_r.header.stamp = time_ros;
         ps_shoulder_r.point = p_shoulder_r;
 
         pub_pointstamped_shoulder_r.publish(ps_shoulder_r);
@@ -270,7 +272,7 @@ void OpenPoseROS::loop() {
         p_chest.z = z_arr[CHST];
         geometry_msgs::PointStamped ps_chest;
         ps_chest.header.frame_id = "kinect2_ir_optical_frame";
-        ps_chest.header.stamp = ros::Time::now();
+        ps_chest.header.stamp = time_ros;
         ps_chest.point = p_chest;
 
         pub_pointstamped_chest.publish(ps_chest);
