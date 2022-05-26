@@ -12,9 +12,16 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_python_setup()
 
+add_message_files(
+  FILES
+  ChestCompensationRequest.msg
+  ChestCompensationResponse.msg
+)
+
 add_service_files(
   FILES
   Get_IK.srv
+  Get_Chest_Compensation.srv
 )
 
 generate_messages(
@@ -46,6 +53,15 @@ catkin_install_python(PROGRAMS
   src/mrn_movo/state_machine.py
   src/mrn_movo/get_ik_left_arm_server.py
   src/mrn_movo/get_ik_left_arm_client.py
+  src/mrn_movo/get_chest_compensation_server.py
+  src/mrn_movo/get_chest_compensation_client.py
+  src/mrn_movo/op_movo_publishers/op_chest_approxtime.py
+  src/mrn_movo/op_movo_publishers/op_wrist_left_approxtime.py
+  src/mrn_movo/op_movo_publishers/op_wrist_right_approxtime.py
+  src/mrn_movo/op_movo_publishers/op_elbow_left_approxtime.py
+  src/mrn_movo/op_movo_publishers/op_elbow_right_approxtime.py
+  src/mrn_movo/op_movo_publishers/op_shoulder_left_approxtime.py
+  src/mrn_movo/op_movo_publishers/op_shoulder_right_approxtime.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

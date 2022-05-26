@@ -32,7 +32,8 @@ def left_arm_ik(x, y, z):
 
     request.approximate = True
     
-    request.robot_state = rospy.wait_for_message('/mrn_movo/left_arm/IK', moveit_msgs.msg.RobotState)
+    global robot_state
+    request.robot_state = robot_state.solution
 
     request.pose_goals.append(bio_ik_msgs.msg.PoseGoal())
     request.pose_goals[-1].link_name = "left_gripper_base_link"
@@ -45,7 +46,7 @@ def left_arm_ik(x, y, z):
     request.pose_goals[-1].pose.orientation.w = 0.707
 
     response = get_bio_ik(request).ik_response
-    pub.publish(response.solution)
+    print(response)
     
 def left_arm_ik_initial(x, y, z):
     request = bio_ik_msgs.msg.IKRequest()
@@ -63,12 +64,14 @@ def left_arm_ik_initial(x, y, z):
     request.pose_goals[-1].pose.orientation.w = 0.707
 
     response = get_bio_ik(request).ik_response
-    pub.publish(response.solution)
+    global robot_state
+    robot_state = response
+    print(response)
     
 
 if __name__ == '__main__':
     print('Postion 1:', 0.8, 0.35, 0.75)
     left_arm_ik_initial(0.8, 0.35, 0.75)
     print('Postion 2:', 0.8, 0.35, 0.75)
-    left_arm_ik(0.8, 0.7, 0.75)
+    left_arm_ik(0.8, 0.7, 1)
 

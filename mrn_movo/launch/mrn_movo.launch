@@ -1,7 +1,12 @@
 <launch>
     <node name="openpose" pkg="openpose_ros" type="openpose_ros_demo" args="/kinect2/sd/image_color_rect /kinect2/sd/image_depth_rect 000"/>
     <node name="bio_ik_service_launch" pkg="bio_ik_service" type="bio_ik_service"/>
-    <node name="wrist_publisher" pkg="mrn_movo" type="wrist_publisher.py"/>
-    <node name="chest_publisher" pkg="mrn_movo" type="chest_publisher.py"/>
-    <node name="point_to_IK" pkg="mrn_movo" type="pointToIK.py"/>
+    <node name="op_movo_chest" pkg="mrn_movo" type="op_chest_approxtime.py"/>
+    <node name="op_movo_wrist_left"  pkg="mrn_movo" type="op_wrist_left_approxtime.py"/>
+    <node name="op_movo_wrist_right" pkg="mrn_movo" type="op_wrist_right_approxtime.py"/>
+    <node name="op_movo_elbow_left"  pkg="mrn_movo" type="op_elbow_left_approxtime.py"/>
+    <node name="op_movo_elbow_right" pkg="mrn_movo" type="op_elbow_right_approxtime.py"/>
+    <node name="op_movo_shoulder_left"  pkg="mrn_movo" type="op_shoulder_left_approxtime.py"/>
+    <node name="op_movo_shoulder_right" pkg="mrn_movo" type="op_shoulder_right_approxtime.py"/>
+    <node name="wrist_publisher" pkg="mrn_movo" type="wrist_publisher.py" output="screen"/>
 </launch>
