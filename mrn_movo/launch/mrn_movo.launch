@@ -9,4 +9,5 @@
     <node name="op_movo_shoulder_left"  pkg="mrn_movo" type="op_shoulder_left_approxtime.py"/>
     <node name="op_movo_shoulder_right" pkg="mrn_movo" type="op_shoulder_right_approxtime.py"/>
     <node name="wrist_publisher" pkg="mrn_movo" type="wrist_publisher.py" output="screen"/>
+    <node name="openpose_csv_wrist" pkg="mrn_movo" type="csv_output.py"/>
 </launch>

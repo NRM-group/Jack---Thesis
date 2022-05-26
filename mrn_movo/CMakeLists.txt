@@ -55,6 +55,7 @@ catkin_install_python(PROGRAMS
   src/mrn_movo/get_ik_left_arm_client.py
   src/mrn_movo/get_chest_compensation_server.py
   src/mrn_movo/get_chest_compensation_client.py
+  src/mrn_movo/csv_output.py
   src/mrn_movo/op_movo_publishers/op_chest_approxtime.py
   src/mrn_movo/op_movo_publishers/op_wrist_left_approxtime.py
   src/mrn_movo/op_movo_publishers/op_wrist_right_approxtime.py
