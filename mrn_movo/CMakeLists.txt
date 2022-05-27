@@ -48,13 +48,8 @@ catkin_install_python(PROGRAMS
   src/mrn_movo/chest_publisher.py
   src/mrn_movo/pointToIK.py
   src/mrn_movo/baseToKinect.py
-  src/mrn_movo/get_bio_ik_movo.py
   src/mrn_movo/PointCloudVisualisation.py
   src/mrn_movo/state_machine.py
-  src/mrn_movo/get_ik_left_arm_server.py
-  src/mrn_movo/get_ik_left_arm_client.py
-  src/mrn_movo/get_chest_compensation_server.py
-  src/mrn_movo/get_chest_compensation_client.py
   src/mrn_movo/csv_output.py
   src/mrn_movo/op_movo_publishers/op_chest_approxtime.py
   src/mrn_movo/op_movo_publishers/op_wrist_left_approxtime.py

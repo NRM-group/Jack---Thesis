@@ -288,9 +288,9 @@ void OpenPoseROS::loop() {
             last_col = col_arr[WRST_L];
         }'*/
     }
-    //cv::imshow("OpenPose", cvMat);
+    cv::imshow("OpenPose", cvMat);
     //cv::imshow("Draw", img_draw);
-    //char c = cv::waitKey(1);
+    char c = cv::waitKey(1);
     flag_color = false;
     flag_depth = false;
 }

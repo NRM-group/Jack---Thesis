@@ -12,47 +12,40 @@ from geometry_msgs.msg import Point, PointStamped
 from sensor_msgs.msg import JointState
 import trajectory_msgs.msg
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Float64
-
+from std_msgs.msg import Float64, Bool
+import time
 import rospy
+from moveit_msgs.msg import RobotState
 
 def left_arm_ik(pointstamped):
     point = pointstamped.point
     
+    odom = rospy.wait_for_message('/movo/odometry/local_filtered', Odometry).pose.pose.position
+    offset = rospy.wait_for_message('/mrn_movo/offset', Point)
+    base_distance = rospy.wait_for_message("/mrn_movo/base_distance", Point)
+    
     # Test the distance from the Kinova's base_link frame origin and the OP_movo chest position
-    dist_chest_x = 1.2                                      # Distance from base_link to chest x
+    dist_chest_x = base_distance.x                                      # Distance from base_link to chest x
     dist_chest_y = 0                                        # Distance from base_link to chest x
     delta_chest_x = point.x - dist_chest_x
     delta_chest_y = point.y - dist_chest_y
     
-    odom = rospy.wait_for_message('/movo/odometry/local_filtered', Odometry).pose.pose.position
-    
     delta_chest_adjusted = Point()
     delta_chest_adjusted.x  = delta_chest_x + odom.x
-    delta_chest_adjusted.y  = delta_chest_y + odom.y
     
     threshold_x = 0.2                                       # Threshold for change in x chest compensation
     threshold_y = 0.2                                       # Threshold for change in y chest compensation
     
     # If delta_chest is less than the threshold, use the Kinova MOVO arms to compensate for the chest movement
-    if abs(delta_chest_x) > threshold_x and abs(delta_chest_y) < threshold_y:
+    if abs(delta_chest_x) > threshold_x:
         delta_chest_adjusted = Point()
         delta_chest_adjusted.x  = delta_chest_x + odom.x
-        delta_chest_adjusted.y  = 0
-        base_move.publish(delta_chest_adjusted)
-    elif abs(delta_chest_x) < threshold_x and abs(delta_chest_y) > threshold_y:
-        delta_chest_adjusted = Point()
-        delta_chest_adjusted.x  = 0
-        delta_chest_adjusted.y  = delta_chest_y + odom.y
-        base_move.publish(delta_chest_adjusted)        
-    elif abs(delta_chest_x) > threshold_x and abs(delta_chest_y) > threshold_y:
-        delta_chest_adjusted = Point()
-        delta_chest_adjusted.x  = delta_chest_x + odom.x
-        delta_chest_adjusted.y  = delta_chest_y + odom.y
-        base_move.publish(delta_chest_adjusted)
-    else:    
-        point.x = point.x - 0.25
-        point.y = point.y + 0.25
+        if abs(delta_chest_adjusted.x) < 0.4:
+            base_move.publish(delta_chest_adjusted)
+    else:
+        point.x = point.x + offset.x
+        point.y = point.y + offset.y
+        point.z = point.z + offset.z
         
         # Filter any unexpected values
         if point.x > 0 and point.y > 0 and point.z > 0:
@@ -85,7 +78,8 @@ def left_arm_ik(pointstamped):
             display.trajectory[0].joint_trajectory.points.append(trajectory_msgs.msg.JointTrajectoryPoint())
             display.trajectory[0].joint_trajectory.points[-1].time_from_start.secs = 1
             display_publisher = rospy.Publisher("/move_group/display_planned_path", moveit_msgs.msg.DisplayTrajectory, latch=True, queue_size=10)
-            display_publisher.publish(display)
+            display_publisher.publish(display)      
+    
 
 def left_arm_ik_initial():
     request = bio_ik_msgs.msg.IKRequest()
@@ -107,14 +101,18 @@ def left_arm_ik_initial():
             
 
 if __name__=="__main__":
-    rospy.init_node('left_arm_ik_chest')
+    rospy.init_node('left_arm_ik_chest', anonymous=True)
+
     rospy.wait_for_service("/bio_ik/get_bio_ik")
+    
     get_bio_ik = rospy.ServiceProxy("/bio_ik/get_bio_ik", bio_ik_msgs.srv.GetIK)
     pub = rospy.Publisher('/mrn_movo/left_arm/state', JointState, queue_size=1, latch=True)
     base_move = rospy.Publisher('/mrn_movo/base/move', Point, queue_size=1)
+    ready_to_begin_pub = rospy.Publisher('/mrn_movo/begin', Bool, queue_size=1, latch=True)
+    global robot_state
+    robot_state = RobotState()
     left_arm_ik_initial()
+    ready_to_begin_pub.publish(True)
     rospy.Subscriber('/mrn_vision/openpose/movo/chest', PointStamped, left_arm_ik, queue_size=1)
-    rospy.spin()
     
-    
-    
+    rospy.spin() 

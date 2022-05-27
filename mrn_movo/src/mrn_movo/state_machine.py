@@ -1,95 +1,148 @@
 #!/usr/bin/env python3
 
-from platform import machine
-from sklearn.metrics import euclidean_distances
 import rospy
-import time
-from mrn_movo.src.mrn_movo.wrist_publisher import left_arm_ik, left_arm_op_transform
-from scipy.spatial import distance
-from transitions import Machine
 import smach
-import smach_ros
 import numpy as np
+import math
+from geometry_msgs.msg import Point, PointStamped
+from std_msgs.msg import Bool
+import gtts
+from playsound import playsound
+import time
 
-class start(smach.State):
+
+class Start(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['start'])
+        smach.State.__init__(self, 
+                             outcomes=['begin'],
+                             input_keys=['offset'])
         self.counter = 0
-        
+
     def execute(self, userdata):
-        try:
-            input("Press enter to start")
-        except SyntaxError:
-            pass
-        return 'start'
-        
-class move_arm_p1(smach.State):
+        rospy.loginfo('Starting Test')
+        point = Point()
+        point.x = userdata.offset[0, 0]
+        point.y = userdata.offset[0, 1]
+        point.z = userdata.offset[0, 2]
+        offset_pub.publish(point)
+        base_distance = Point()
+        base_distance.x = 1.2
+        base_distance_pub.publish(base_distance)
+        rospy.wait_for_message('/mrn_movo/begin', Bool)
+        rospy
+        return 'begin'
+
+class MoveArmToOffset(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['arm_moving', 'arm_moved'])
-        
+        smach.State.__init__(self, 
+                             outcomes=['Offset Changed', 'all points tested'],
+                             input_keys=['offset', 'num'])
+
     def execute(self, userdata):
-        rospy.loginfo('Moving Arm to Box 1')
-        start_time = time.time()
-        left_arm_ik(points[0,:][0], points[0,:][1], points[0,:][2])
-        if time.time() < start_time + 10:
-            return 'arm_moving'
+        rospy.loginfo('Executing state Move Arm to Offset')
+        point = Point()
+        point.x = userdata.offset[userdata.num, 0]
+        point.y = userdata.offset[userdata.num, 1]
+        point.z = userdata.offset[userdata.num, 2]
+        base_distance = Point()
+        if userdata.num < 10:
+            if userdata.num < 6:
+                base_distance.x = 1.2
+                base_distance_pub.publish(base_distance)
+                offset_pub.publish(point) 
+                return 'Offset Changed'
+            else:
+                base_distance.x = 1.6
+                base_distance_pub.publish(base_distance)
+                offset_pub.publish(point) 
+                return 'Offset Changed'
         else:
-            return 'arm_moved'
+            return 'all points tested'
 
-class test_op(smach.State):
+class TestOP(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['pass', 'fail'])
-        self.counter = 0
+        smach.State.__init__(self, 
+                             outcomes=['true', 'false'],
+                             input_keys=['offset', 'num'],
+                             output_keys=['num'])
         
     def execute(self, userdata):
-        op_xyz = left_arm_op_transform()
-        p1 = [1,1,1]
-        rospy.loginfo('Testing OpenPose')
-        if (distance.euclidean(p1, op_xyz) < 0.1):
-            return 'pass'
+        rospy.loginfo("Testing OP Position")
+        rospy.wait_for_message("/mrn_movo/hand_moved", Bool)
+        tts = gtts.gTTS("Please touch my hand")
+        tts.save("touchmyhand.mp3")
+        playsound("touchmyhand.mp3")
+        time.sleep(3)
+        wrist_location = rospy.wait_for_message("mrn_vision/openpose/movo/wrist_right", PointStamped)
+        wrist_location = wrist_location.point
+        chest_location = rospy.wait_for_message("mrn_vision/openpose/movo/chest", PointStamped)
+        chest_location = chest_location.point
+        offset_point = Point()
+        offset_point.x = userdata.offset[userdata.num, 0] + chest_location.x
+        offset_point.y = userdata.offset[userdata.num, 1] + chest_location.y
+        offset_point.z = userdata.offset[userdata.num, 2] + chest_location.z
+        print(offset_point)
+        euc_dist = math.sqrt((offset_point.x-wrist_location.x)**2 + (offset_point.y-wrist_location.y)**2 + (offset_point.z-wrist_location.z)**2)
+        
+        if euc_dist < 0.2:
+            userdata.num += 1
+            return 'true'
         else:
-            return 'fail'
+            return 'false'
         
-class move_arm_op(smach.State):
+class Finish(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['arm_op_moved'])
-        self.counter = 0
-        
-    def execute(self, userdata):
-        op_xyz = left_arm_op_transform()
-        left_arm_ik(op_xyz[0], op_xyz[1], op_xyz[2])
-        rospy.loginfo('Moving Arm to OpenPose Location')
-        return 'arm_op_moved'
-                
-def main():
-    rospy.init_node('mrn_movo_state_machine')
-    
-    sm = smach.StateMachine(outcomes=['move_arm_op', 'finish'])
-    
-    # Open the container
-    with sm:
-        # Add states to the container
-        smach.StateMachine.add('Start', start(), 
-                               transitions={'start':'Move Arm'})
-        smach.StateMachine.add('Move Arm', move_arm_p1(), 
-                               transitions={'arm_moving':'Move Arm',
-                                            'arm_moved':'Test OpenPose'})
-        smach.StateMachine.add('Test OpenPose', test_op(), 
-                               transitions={'fail':'move_arm_op',
-                                            'pass':'finish'})
-        smach.StateMachine.add('Move Arm To OpenPose', move_arm_op(), 
-                               transitions={'arm_op_moved':'test_op'})
+        smach.State.__init__(self, outcomes=['finish'])
 
-    points = np.array([[0.8, 0.4, 1],
-                       [0.8, 0.8, 1],
-                       [0.8, 0.4, 1.5],
-                       [0.8, 0.8, 1.5]])
-    # Execute SMACH plan
-    outcome = sm.execute()
-    
-# p1 = [0.8, 0.3, 1]
-# op_xyz = left_arm_op_transform()
-# print(distance.euclidean(p1, op_xyz))
+    def execute(self, userdata):
+        rospy.loginfo('Test Finished')
+        return 'finish'
 
 if __name__ == '__main__':
-    main()
+    
+    rospy.init_node('mrn_movo_state_machine', anonymous=True)
+    
+    offset_pub = rospy.Publisher("/mrn_movo/offset", Point, queue_size=1, latch=True)
+    base_distance_pub = rospy.Publisher("/mrn_movo/base_distance", Point, queue_size=1, latch=True)
+        
+    # Create a SMACH state machine
+    sm_workspace = smach.StateMachine(outcomes=['finish'])
+    
+    # User Data
+    sm_workspace.userdata.num = 0
+    sm_workspace.userdata.offset = np.array([[-0.25, 0.25, 0],
+                                             [-0.25, 0.65, 0],
+                                             [-0.25, 0.25, 0.4],
+                                             [-0.25, 0.65, 0.4],
+                                             [-0.45, 0.45, 0.2],
+                                             [-0.65, 0.25, 0],
+                                             [-0.65, 0.65, 0],
+                                             [-0.65, 0.25, 0.4],
+                                             [-0.65, 0.65, 0.4]])
+    
+    # Open the container
+    with sm_workspace:
+        
+        # Start State
+        smach.StateMachine.add('Start', Start(), 
+                               transitions={'begin':'OP Test'})
+            
+        # Move Arm to Initial Measurement Point P
+        smach.StateMachine.add('Move Arm To Offset', MoveArmToOffset(), 
+                            transitions={'Offset Changed':'OP Test',
+                                         'all points tested':'Finish'})
+        
+        smach.StateMachine.add('OP Test', TestOP(),
+                               transitions={'true':'Move Arm To Offset',
+                                            'false':'OP Test'})
+            
+        # Finish
+        smach.StateMachine.add('Finish', Finish())
+
+
+    # sis = smach_ros.IntrospectionServer('server_name', sm_workspace, '/Point_Test')
+    # sis.start()
+    # Execute SMACH plan
+    outcome = sm_workspace.execute()
+    rospy.spin()
+    # sis.stop()
