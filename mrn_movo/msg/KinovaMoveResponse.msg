@@ -1,0 +1,3 @@
+sensor_msgs/JointState ik_joint_state
+geometry_msgs/Point base_move
+geometry_msgs/PointStamped head_look

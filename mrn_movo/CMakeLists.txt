@@ -5,23 +5,22 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  message_generation
   geometry_msgs
   sensor_msgs
+  nav_msgs
+  message_generation
 )
 
 catkin_python_setup()
 
 add_message_files(
   FILES
-  ChestCompensationRequest.msg
-  ChestCompensationResponse.msg
+  KinovaMoveResponse.msg
 )
 
 add_service_files(
   FILES
-  Get_IK.srv
-  Get_Chest_Compensation.srv
+  KinovaMoveService.srv
 )
 
 generate_messages(
@@ -29,12 +28,13 @@ generate_messages(
   std_msgs
   geometry_msgs
   sensor_msgs
+  nav_msgs
 )
 
 catkin_package(
  INCLUDE_DIRS include
 #  LIBRARIES mrn_movo
- CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs geometry_msgs message_runtime
+ CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -60,4 +60,3 @@ catkin_install_python(PROGRAMS
   src/mrn_movo/op_movo_publishers/op_shoulder_right_approxtime.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-

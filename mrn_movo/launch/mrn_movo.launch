@@ -8,7 +8,7 @@
     <node name="op_movo_elbow_right" pkg="mrn_movo" type="op_elbow_right_approxtime.py"/>
     <node name="op_movo_shoulder_left"  pkg="mrn_movo" type="op_shoulder_left_approxtime.py"/>
     <node name="op_movo_shoulder_right" pkg="mrn_movo" type="op_shoulder_right_approxtime.py"/>
-    <node name="wrist_publisher" pkg="mrn_movo" type="wrist_publisher.py" output="screen"/>
     <node name="openpose_csv_wrist" pkg="mrn_movo" type="csv_output.py"/>
     <node name="state_machine" pkg="mrn_movo" type="state_machine.py" output="screen"/>
+    <node name="send_movement_server" pkg="mrn_movo" type="send_movement_server.py" output="screen"/>
 </launch>

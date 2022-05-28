@@ -3,7 +3,8 @@
 from __future__ import print_function
 import re
 
-from mrn_movo.srv import Get_IK
+from mrn_movo.srv import KinovaMoveService
+from mrn_movo.msg import KinovaMoveResponse
 import bio_ik_msgs
 import bio_ik_msgs.msg
 import bio_ik_msgs.srv
@@ -18,49 +19,51 @@ import rospy
 from moveit_msgs.msg import RobotState
 import message_filters
 
-
-def left_arm_ik(op_chest, odom):
-    point = op_chest.point
-    odom = odom.pose.pose.position
-    offset =            rospy.wait_for_message('/mrn_movo/offset', Point)
-    base_distance =     rospy.wait_for_message("/mrn_movo/base_distance", Point)
-
-    # odom = odom.rospy.wait_for_message('/movo/odometry/local_filtered', Odometry).pose.pose.position
-    # offset = rospy.wait_for_message('/mrn_movo/offset', Point)
-    # base_distance = rospy.wait_for_message("/mrn_movo/base_distance", Point)
-    
-    # Test the distance from the Kinova's base_link frame origin and the OP_movo chest position
-    # dist_chest_x = base_distance.x                                      # Distance from base_link to chest x
-    dist_chest_x = 0.8 - offset.x
-    dist_chest_y = 0                                        # Distance from base_link to chest x
+def kinova_movo_service(req):
+    time_now = rospy.Time.now()
+    offset = req.offset
+    point = req.chest_position.point
+    odom = req.odometry.pose.pose.position
+    dist_chest_x = 0.9 - offset.x                           # Distance from base_link to chest x
     delta_chest_x = point.x - dist_chest_x
-    delta_chest_y = point.y - dist_chest_y
     
     delta_chest_adjusted = Point()
     delta_chest_adjusted.x  = delta_chest_x + odom.x
     
-    threshold_x = 0.1                                       # Threshold for change in x chest compensation
-    threshold_y = 0.2                                       # Threshold for change in y chest compensation
+    threshold_x = 0.2                                       # Threshold for change in x chest compensation
+    
+    base_move = Point()
+    head_look_at = PointStamped()
+    
+    global robot_state
+    joint_state = robot_state.joint_state
+    
+    head_look_at.point.x = point.x + offset.x
+    head_look_at.point.y = point.y + offset.y
+    head_look_at.point.z = point.z + offset.z
+    head_look_at.header.stamp = time_now
     
     # If delta_chest is less than the threshold, use the Kinova MOVO arms to compensate for the chest movement
     if abs(delta_chest_x) > threshold_x:
         delta_chest_adjusted = Point()
         delta_chest_adjusted.x  = delta_chest_x + odom.x
         if abs(delta_chest_adjusted.x) < 0.4:
-            base_move.publish(delta_chest_adjusted)
+            # base_move.publish(delta_chest_adjusted)
+            base_move.x = delta_chest_adjusted.x
+            
     else:
         point.x = point.x + offset.x
         point.y = point.y + offset.y
-        point.z = point.z + offset.z
-        
+        point.z = point.z + offset.z 
+            
         # Filter any unexpected values
         if point.x > 0 and point.y > 0 and point.z > 0:
             # print(point)
             request = bio_ik_msgs.msg.IKRequest()
             request.group_name = "whole_body_left"
             request.timeout.secs = 1
-            request.approximate = True
-            global robot_state
+            request.approximate = False
+            # global robot_state
             request.robot_state = robot_state
             request.pose_goals.append(bio_ik_msgs.msg.PoseGoal())
             request.pose_goals[-1].link_name = "left_gripper_finger1_finger_tip_link"
@@ -72,10 +75,10 @@ def left_arm_ik(op_chest, odom):
             request.pose_goals[-1].pose.orientation.z = 0.5
             request.pose_goals[-1].pose.orientation.w = 0.5
             response = get_bio_ik(request).ik_response
-            print(response.solution_fitness)
+            # print(response.solution_fitness)
             joint_state = response.solution.joint_state
-            joint_state.header.stamp = rospy.Time.now()
-            pub.publish(response.solution.joint_state)
+            joint_state.header.stamp = time_now
+            # pub.publish(response.solution.joint_state)
             
             display = moveit_msgs.msg.DisplayTrajectory()
             display.trajectory_start = response.solution
@@ -85,7 +88,12 @@ def left_arm_ik(op_chest, odom):
             display.trajectory[0].joint_trajectory.points.append(trajectory_msgs.msg.JointTrajectoryPoint())
             display.trajectory[0].joint_trajectory.points[-1].time_from_start.secs = 1
             display_publisher = rospy.Publisher("/move_group/display_planned_path", moveit_msgs.msg.DisplayTrajectory, latch=True, queue_size=10)
-            display_publisher.publish(display)      
+            display_publisher.publish(display)
+            
+    KinovaMoveResponse.base_move = base_move
+    KinovaMoveResponse.ik_joint_state = joint_state  
+    KinovaMoveResponse.head_look = head_look_at            
+    return KinovaMoveResponse
     
 
 def left_arm_ik_initial():
@@ -104,28 +112,18 @@ def left_arm_ik_initial():
     request.pose_goals[-1].pose.orientation.w = 0.5
     response = get_bio_ik(request).ik_response
     global robot_state
-    robot_state = response.solution     
-            
+    robot_state = response.solution               
 
-if __name__=="__main__":
-    rospy.init_node('left_arm_ik_chest', anonymous=True)
-
-    rospy.wait_for_service("/bio_ik/get_bio_ik")
-    
-    get_bio_ik = rospy.ServiceProxy("/bio_ik/get_bio_ik", bio_ik_msgs.srv.GetIK)
-    pub = rospy.Publisher('/mrn_movo/left_arm/state', JointState, queue_size=1, latch=True)
-    base_move = rospy.Publisher('/mrn_movo/base/move', Point, queue_size=1)
-    ready_to_begin_pub = rospy.Publisher('/mrn_movo/begin', Bool, queue_size=1, latch=True)
+def send_movement_server():
+    rospy.init_node("send_movement_server")
     global robot_state
     robot_state = RobotState()
     left_arm_ik_initial()
-    ready_to_begin_pub.publish(True)
-    # rospy.Subscriber('/mrn_vision/openpose/movo/chest', PointStamped, left_arm_ik, queue_size=1)
+    s = rospy.Service("send_movement", KinovaMoveService, kinova_movo_service)
+    print("Ready to provide movement solutions")
+    rospy.spin()
     
-    op_chest_sub =          message_filters.Subscriber('/mrn_vision/openpose/movo/chest', PointStamped)
-    odom_sub =              message_filters.Subscriber('/movo/odometry/local_filtered', Odometry)
-    
-    ts = message_filters.ApproximateTimeSynchronizer([op_chest_sub, odom_sub], 10, 0.1)    
-    ts.registerCallback(left_arm_ik)
-    
-    rospy.spin() 
+if __name__ == "__main__":
+    rospy.wait_for_service("/bio_ik/get_bio_ik")
+    get_bio_ik = rospy.ServiceProxy("/bio_ik/get_bio_ik", bio_ik_msgs.srv.GetIK)
+    send_movement_server()
