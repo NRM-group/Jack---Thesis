@@ -21,10 +21,10 @@ import message_filters
 
 def kinova_movo_service(req):
     time_now = rospy.Time.now()
-    offset = req.offset
+    offset = req.offset.point
     point = req.chest_position.point
     odom = req.odometry.pose.pose.position
-    dist_chest_x = 0.9 - offset.x                           # Distance from base_link to chest x
+    dist_chest_x = 0.8 - offset.x                           # Distance from base_link to chest x
     delta_chest_x = point.x - dist_chest_x
     
     delta_chest_adjusted = Point()
@@ -62,20 +62,19 @@ def kinova_movo_service(req):
             request = bio_ik_msgs.msg.IKRequest()
             request.group_name = "whole_body_left"
             request.timeout.secs = 1
-            request.approximate = False
-            # global robot_state
+            request.approximate = True
             request.robot_state = robot_state
             request.pose_goals.append(bio_ik_msgs.msg.PoseGoal())
-            request.pose_goals[-1].link_name = "left_gripper_finger1_finger_tip_link"
+            request.pose_goals[-1].link_name = "left_gripper_base_link"
             request.pose_goals[-1].pose.position.x = point.x
             request.pose_goals[-1].pose.position.y = point.y
             request.pose_goals[-1].pose.position.z = point.z
-            request.pose_goals[-1].pose.orientation.x = 0.5
-            request.pose_goals[-1].pose.orientation.y = -0.5
-            request.pose_goals[-1].pose.orientation.z = 0.5
-            request.pose_goals[-1].pose.orientation.w = 0.5
+            request.pose_goals[-1].pose.orientation.x = 0.0
+            request.pose_goals[-1].pose.orientation.y = -0.707
+            request.pose_goals[-1].pose.orientation.z = 0.0
+            request.pose_goals[-1].pose.orientation.w = 0.707
             response = get_bio_ik(request).ik_response
-            # print(response.solution_fitness)
+            print(response.solution_fitness)
             joint_state = response.solution.joint_state
             joint_state.header.stamp = time_now
             # pub.publish(response.solution.joint_state)
@@ -90,6 +89,9 @@ def kinova_movo_service(req):
             display_publisher = rospy.Publisher("/move_group/display_planned_path", moveit_msgs.msg.DisplayTrajectory, latch=True, queue_size=10)
             display_publisher.publish(display)
             
+            robot_state = response.solution
+            
+            
     KinovaMoveResponse.base_move = base_move
     KinovaMoveResponse.ik_joint_state = joint_state  
     KinovaMoveResponse.head_look = head_look_at            
@@ -102,14 +104,14 @@ def left_arm_ik_initial():
     request.timeout.secs = 1
     request.approximate = True
     request.pose_goals.append(bio_ik_msgs.msg.PoseGoal())
-    request.pose_goals[-1].link_name = "left_gripper_finger1_finger_tip_link"
+    request.pose_goals[-1].link_name = "left_gripper_base_link"
     request.pose_goals[-1].pose.position.x = 0.8
     request.pose_goals[-1].pose.position.y = 0.4
     request.pose_goals[-1].pose.position.z = 1.0
-    request.pose_goals[-1].pose.orientation.x = 0.5
-    request.pose_goals[-1].pose.orientation.y = -0.5
-    request.pose_goals[-1].pose.orientation.z = 0.5
-    request.pose_goals[-1].pose.orientation.w = 0.5
+    request.pose_goals[-1].pose.orientation.x = 0.0
+    request.pose_goals[-1].pose.orientation.y = -0.707
+    request.pose_goals[-1].pose.orientation.z = 0.0
+    request.pose_goals[-1].pose.orientation.w = 0.707
     response = get_bio_ik(request).ik_response
     global robot_state
     robot_state = response.solution               

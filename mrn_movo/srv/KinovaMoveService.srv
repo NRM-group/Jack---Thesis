@@ -1,5 +1,5 @@
 geometry_msgs/PointStamped chest_position
-geometry_msgs/Point offset
+geometry_msgs/PointStamped offset
 nav_msgs/Odometry odometry
 ---
 KinovaMoveResponse response
