@@ -27,6 +27,7 @@ def write_to_csv(chest, wrist_left, wrist_right, elbow_left, elbow_right, should
     
     keypoints = np.hstack((chest, shoulder_right, elbow_right, wrist_right, shoulder_left, elbow_left, wrist_left, t))
     keypoints = np.reshape(keypoints, (1,22))
+    print(keypoints)
     
     global values
     values = np.append(values, keypoints, axis=0)
@@ -35,18 +36,18 @@ def write_to_csv(chest, wrist_left, wrist_right, elbow_left, elbow_right, should
 
 if __name__== '__main__':
     rospy.init_node('openpose_writetocsv')
-    chest_pos_sub =             message_filters.Subscriber("/mrn_vision/openpose/body/chest", PointStamped)
-    wrist_left_pos_sub =        message_filters.Subscriber("/mrn_vision/openpose/body/wrist_left", PointStamped)
-    wrist_right_pos_sub =       message_filters.Subscriber("/mrn_vision/openpose/body/wrist_right", PointStamped)
-    elbow_left_pos_sub =        message_filters.Subscriber("/mrn_vision/openpose/body/elbow_left", PointStamped)
-    elbow_right_pos_sub =       message_filters.Subscriber("/mrn_vision/openpose/body/elbow_right", PointStamped)
-    shoulder_left_pos_sub =     message_filters.Subscriber("/mrn_vision/openpose/body/shoulder_left", PointStamped)
-    shoulder_right_pos_sub =    message_filters.Subscriber("/mrn_vision/openpose/body/shoulder_right", PointStamped)
+    chest_pos_sub =             message_filters.Subscriber("/mrn_vision/openpose/movo/chest", PointStamped)
+    wrist_left_pos_sub =        message_filters.Subscriber("/mrn_vision/openpose/movo/wrist_left", PointStamped)
+    wrist_right_pos_sub =       message_filters.Subscriber("/mrn_vision/openpose/movo/wrist_right", PointStamped)
+    elbow_left_pos_sub =        message_filters.Subscriber("/mrn_vision/openpose/movo/elbow_left", PointStamped)
+    elbow_right_pos_sub =       message_filters.Subscriber("/mrn_vision/openpose/movo/elbow_right", PointStamped)
+    shoulder_left_pos_sub =     message_filters.Subscriber("/mrn_vision/openpose/movo/shoulder_left", PointStamped)
+    shoulder_right_pos_sub =    message_filters.Subscriber("/mrn_vision/openpose/movo/shoulder_right", PointStamped)
     
     global values
     values = np.empty([1,22])
     
-    ts = message_filters.ApproximateTimeSynchronizer([chest_pos_sub, wrist_left_pos_sub, wrist_right_pos_sub, elbow_left_pos_sub, elbow_right_pos_sub, shoulder_left_pos_sub, shoulder_right_pos_sub], 10, 0.1)    
+    ts = message_filters.ApproximateTimeSynchronizer([chest_pos_sub, wrist_left_pos_sub, wrist_right_pos_sub, elbow_left_pos_sub, elbow_right_pos_sub, shoulder_left_pos_sub, shoulder_right_pos_sub], 10, 0.2)    
     ts.registerCallback(write_to_csv)
     rospy.spin()
     

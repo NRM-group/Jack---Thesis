@@ -13,7 +13,7 @@ from mrn_movo.baseToKinect import transformFromPoint
 import message_filters
 
 def shoulder_left_op_transform(shoulder_left_pos, head_joints, linearAct_joints):
-    # print(shoulder_left_pos)
+    print(shoulder_left_pos)
     theta_pan = head_joints.position[0]
     theta_tilt = head_joints.position[1]
     torso_height = linearAct_joints.position[0]
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     rospy.init_node('op_movo_shoulder_left', anonymous=True)
 
     # # Publish Transformed OpenPose Keypoints
-    shoulder_left_op_pub =      rospy.Publisher('mrn_vision/openpose/movo/shoulder_left', PointStamped, queue_size=1)
+    shoulder_left_op_pub =      rospy.Publisher('/mrn_vision/openpose/movo/shoulder_left', PointStamped, queue_size=1)
     shoulder_left_pos_sub =     message_filters.Subscriber("/mrn_vision/openpose/body/shoulder_left", PointStamped)
     head_joints_sub =           message_filters.Subscriber('/movo/head/joint_states', JointState)
     linearAct_joints_sub =      message_filters.Subscriber('/movo/linear_actuator/joint_states', JointState)

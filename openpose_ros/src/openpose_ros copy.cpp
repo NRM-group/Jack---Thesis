@@ -216,8 +216,19 @@ void OpenPoseROS::loop() {
         ps_head.header.frame_id = "kinect2_ir_optical_frame";
         ps_head.header.stamp = time_ros;
         ps_head.point = p_head;
-        if (ps_head.point.x != 0 || ps_head.point.y != 0 || ps_head.point.z != 0) {
-            pub_pointstamped_head.publish(ps_head);
+        diff_x = abs(p_prev_head.x - p_head.x);
+        diff_y = abs(p_prev_head.y - p_head.y);
+        diff_z = abs(p_prev_head.z - p_head.z);
+        if (flag_init == true) {
+            if (diff_x < threshold && diff_y < threshold && diff_z < threshold) {
+                if (ps_head.point.x != 0 || ps_head.point.y != 0 || ps_head.point.z != 0) {
+                    pub_pointstamped_head.publish(ps_head);
+                }
+            }
+        } else {
+            if (ps_head.point.x != 0 || ps_head.point.y != 0 || ps_head.point.z != 0) {
+                pub_pointstamped_head.publish(ps_head);
+            }
         }
         
         geometry_msgs::Point p_wrist_l;
@@ -228,10 +239,20 @@ void OpenPoseROS::loop() {
         ps_wrist_l.header.frame_id = "kinect2_ir_optical_frame";
         ps_wrist_l.header.stamp = time_ros;
         ps_wrist_l.point = p_wrist_l;
-        if (ps_wrist_l.point.x != 0 || ps_wrist_l.point.y != 0 || ps_wrist_l.point.z != 0) {
-            pub_pointstamped_wrist_l.publish(ps_wrist_l);
+        diff_x = abs(p_prev_wrist_l.x - p_wrist_l.x);
+        diff_y = abs(p_prev_wrist_l.y - p_wrist_l.y);
+        diff_z = abs(p_prev_wrist_l.z - p_wrist_l.z);
+        if (flag_init == true) {
+            if (diff_x < threshold && diff_y < threshold && diff_z < threshold) {
+                if (ps_wrist_l.point.x != 0 || ps_wrist_l.point.y != 0 || ps_wrist_l.point.z != 0) {
+                    pub_pointstamped_wrist_l.publish(ps_wrist_l);
+                }
+            }
+        } else {
+            if (ps_wrist_l.point.x != 0 || ps_wrist_l.point.y != 0 || ps_wrist_l.point.z != 0) {
+                pub_pointstamped_wrist_l.publish(ps_wrist_l);
+            }
         }
-
         
 
         geometry_msgs::Point p_elbow_l;
@@ -242,10 +263,20 @@ void OpenPoseROS::loop() {
         ps_elbow_l.header.frame_id = "kinect2_ir_optical_frame";
         ps_elbow_l.header.stamp = time_ros;
         ps_elbow_l.point = p_elbow_l;
-        if (ps_elbow_l.point.x != 0 || ps_elbow_l.point.y != 0 || ps_elbow_l.point.z != 0) {
-            pub_pointstamped_elbow_l.publish(ps_elbow_l);
+        diff_x = abs(p_prev_elbow_l.x - p_elbow_l.x);
+        diff_y = abs(p_prev_elbow_l.y - p_elbow_l.y);
+        diff_z = abs(p_prev_elbow_l.z - p_elbow_l.z);
+        if (flag_init == true) {
+            if (diff_x < threshold && diff_y < threshold && diff_z < threshold) {
+                if (ps_elbow_l.point.x != 0 || ps_elbow_l.point.y != 0 || ps_elbow_l.point.z != 0) {
+                    pub_pointstamped_elbow_l.publish(ps_elbow_l);
+                }
+            }
+        } else {
+            if (ps_elbow_l.point.x != 0 || ps_elbow_l.point.y != 0 || ps_elbow_l.point.z != 0) {
+                pub_pointstamped_elbow_l.publish(ps_elbow_l);
+            }
         }
-
 
         geometry_msgs::Point p_shoulder_l;
         p_shoulder_l.x = x_arr[SHDR_L];
@@ -255,8 +286,19 @@ void OpenPoseROS::loop() {
         ps_shoulder_l.header.frame_id = "kinect2_ir_optical_frame";
         ps_shoulder_l.header.stamp = time_ros;
         ps_shoulder_l.point = p_shoulder_l;
-        if (ps_shoulder_l.point.x != 0 || ps_shoulder_l.point.y != 0 || ps_shoulder_l.point.z != 0) {
-            pub_pointstamped_shoulder_l.publish(ps_shoulder_l);
+        diff_x = abs(p_prev_shoulder_l.x - p_shoulder_l.x);
+        diff_y = abs(p_prev_shoulder_l.y - p_shoulder_l.y);
+        diff_z = abs(p_prev_shoulder_l.z - p_shoulder_l.z);
+        if (flag_init == true) {
+            if (diff_x < threshold && diff_y < threshold && diff_z < threshold) {
+                if (ps_shoulder_l.point.x != 0 || ps_shoulder_l.point.y != 0 || ps_shoulder_l.point.z != 0) {
+                    pub_pointstamped_shoulder_r.publish(ps_shoulder_l);
+                }
+            }
+        } else {
+            if (ps_shoulder_l.point.x != 0 || ps_shoulder_l.point.y != 0 || ps_shoulder_l.point.z != 0) {
+                pub_pointstamped_shoulder_r.publish(ps_shoulder_l);
+            }
         }
 
         geometry_msgs::Point p_wrist_r;
@@ -267,8 +309,19 @@ void OpenPoseROS::loop() {
         ps_wrist_r.header.frame_id = "kinect2_ir_optical_frame";
         ps_wrist_r.header.stamp = time_ros;
         ps_wrist_r.point = p_wrist_r;
-        if (ps_wrist_r.point.x != 0 || ps_wrist_r.point.y != 0 || ps_wrist_r.point.z != 0) {
-            pub_pointstamped_wrist_r.publish(ps_wrist_r);
+        diff_x = abs(p_prev_wrist_r.x - p_wrist_r.x);
+        diff_y = abs(p_prev_wrist_r.y - p_wrist_r.y);
+        diff_z = abs(p_prev_wrist_r.z - p_wrist_r.z);
+        if (flag_init == true) {
+            if (diff_x < threshold && diff_y < threshold && diff_z < threshold) {
+                if (ps_wrist_r.point.x != 0 || ps_wrist_r.point.y != 0 || ps_wrist_r.point.z != 0) {
+                    pub_pointstamped_wrist_r.publish(ps_wrist_r);
+                }
+            }
+        } else {
+            if (ps_wrist_r.point.x != 0 || ps_wrist_r.point.y != 0 || ps_wrist_r.point.z != 0) {
+                pub_pointstamped_wrist_r.publish(ps_wrist_r);
+            }
         }
 
         geometry_msgs::Point p_elbow_r;
@@ -279,10 +332,20 @@ void OpenPoseROS::loop() {
         ps_elbow_r.header.frame_id = "kinect2_ir_optical_frame";
         ps_elbow_r.header.stamp = time_ros;
         ps_elbow_r.point = p_elbow_r;
-        if (ps_elbow_r.point.x != 0 || ps_elbow_r.point.y != 0 || ps_elbow_r.point.z != 0) {
-            pub_pointstamped_elbow_r.publish(ps_elbow_r);
+        diff_x = abs(p_prev_elbow_r.x - p_elbow_r.x);
+        diff_y = abs(p_prev_elbow_r.y - p_elbow_r.y);
+        diff_z = abs(p_prev_elbow_r.z - p_elbow_r.z);
+        if (flag_init == true) {
+            if (diff_x < threshold && diff_y < threshold && diff_z < threshold) {
+                if (ps_elbow_r.point.x != 0 || ps_elbow_r.point.y != 0 || ps_elbow_r.point.z != 0) {
+                    pub_pointstamped_elbow_r.publish(ps_elbow_r);
+                }
+            }
+        } else {
+            if (ps_elbow_r.point.x != 0 || ps_elbow_r.point.y != 0 || ps_elbow_r.point.z != 0) {
+                pub_pointstamped_elbow_r.publish(ps_elbow_r);
+            }
         }
-
 
         geometry_msgs::Point p_shoulder_r;
         p_shoulder_r.x = x_arr[SHDR_R];
@@ -292,10 +355,20 @@ void OpenPoseROS::loop() {
         ps_shoulder_r.header.frame_id = "kinect2_ir_optical_frame";
         ps_shoulder_r.header.stamp = time_ros;
         ps_shoulder_r.point = p_shoulder_r;
-        if (ps_shoulder_r.point.x != 0 || ps_shoulder_r.point.y != 0 || ps_shoulder_r.point.z != 0) {
-            pub_pointstamped_shoulder_r.publish(ps_shoulder_r);
+        diff_x = abs(p_prev_shoulder_r.x - p_shoulder_r.x);
+        diff_y = abs(p_prev_shoulder_r.y - p_shoulder_r.y);
+        diff_z = abs(p_prev_shoulder_r.z - p_shoulder_r.z);
+        if (flag_init == true) {
+            if (diff_x < threshold && diff_y < threshold && diff_z < threshold) {
+                if (ps_shoulder_r.point.x != 0 || ps_shoulder_r.point.y != 0 || ps_shoulder_r.point.z != 0) {
+                    pub_pointstamped_shoulder_r.publish(ps_shoulder_r);
+                }
+            }
+        } else {
+            if (ps_shoulder_r.point.x != 0 || ps_shoulder_r.point.y != 0 || ps_shoulder_r.point.z != 0) {
+                pub_pointstamped_shoulder_r.publish(ps_shoulder_r);
+            }
         }
-
 
         geometry_msgs::Point p_chest;
         p_chest.x = x_arr[CHST];
@@ -305,11 +378,31 @@ void OpenPoseROS::loop() {
         ps_chest.header.frame_id = "kinect2_ir_optical_frame";
         ps_chest.header.stamp = time_ros;
         ps_chest.point = p_chest;
-        if (ps_chest.point.x != 0 || ps_chest.point.y != 0 || ps_chest.point.z != 0) {
-                pub_pointstamped_chest.publish(ps_chest);
+        diff_x = abs(p_prev_head.x - p_head.x);
+        diff_y = abs(p_prev_head.y - p_head.y);
+        diff_z = abs(p_prev_head.z - p_head.z);
+        if (flag_init == true) {
+            if (diff_x < threshold && diff_y < threshold && diff_z < threshold) {
+                if (ps_chest.point.x != 0 || ps_chest.point.y != 0 || ps_chest.point.z != 0) {
+                    pub_pointstamped_chest.publish(ps_chest);
+                }
             }
-
-         
+        }
+        else {
+            if (ps_chest.point.x != 0 || ps_chest.point.y != 0 || ps_chest.point.z != 0) {
+                    pub_pointstamped_chest.publish(ps_chest);
+                }
+        }
+        
+        flag_init = true;
+        p_prev_head         = p_head;      
+        p_prev_wrist_l      = p_wrist_l;   
+        p_prev_wrist_r      = p_wrist_r;   
+        p_prev_elbow_l      = p_elbow_l;   
+        p_prev_elbow_r      = p_elbow_r;   
+        p_prev_shoulder_l   = p_shoulder_l;
+        p_prev_shoulder_r   = p_shoulder_r;   
+        p_prev_chest        = p_chest;     
         /*
         if ((poseKeypoints[{0, WRST_L, 3}] > 0.8)) {
             if (abs(last_row - row_arr[WRST_L]) < 50 && abs(last_col - col_arr[WRST_L]) < 50) {

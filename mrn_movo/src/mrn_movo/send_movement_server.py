@@ -47,7 +47,7 @@ def kinova_movo_service(req):
     if abs(delta_chest_x) > threshold_x:
         delta_chest_adjusted = Point()
         delta_chest_adjusted.x  = delta_chest_x + odom.x
-        if abs(delta_chest_adjusted.x) < 0.4:
+        if abs(delta_chest_adjusted.x) < 0.5:
             # base_move.publish(delta_chest_adjusted)
             base_move.x = delta_chest_adjusted.x
             

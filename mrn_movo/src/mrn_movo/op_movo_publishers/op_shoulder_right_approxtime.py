@@ -33,7 +33,7 @@ if __name__ == '__main__':
     rospy.init_node('op_movo_shoulder_right', anonymous=True)
 
     # # Publish Transformed OpenPose Keypoints
-    shoulder_right_op_pub =     rospy.Publisher('mrn_vision/openpose/movo/shoulder_right', PointStamped, queue_size=1)
+    shoulder_right_op_pub =     rospy.Publisher('/mrn_vision/openpose/movo/shoulder_right', PointStamped, queue_size=1)
     shoulder_right_pos_sub =    message_filters.Subscriber("/mrn_vision/openpose/body/shoulder_right", PointStamped)
     head_joints_sub =           message_filters.Subscriber('/movo/head/joint_states', JointState)
     linearAct_joints_sub =      message_filters.Subscriber('/movo/linear_actuator/joint_states', JointState)

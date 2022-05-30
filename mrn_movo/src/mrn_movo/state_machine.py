@@ -29,6 +29,10 @@ class Start(smach.State):
         except SyntaxError:
             pass
         time.sleep(2)
+        tts = gtts.gTTS("Hello. When I ask, please touch my hand and then relax back to a comfortable position. If you cannot reach my hand, relax back and we can try again")
+        tts.save("hello.mp3")
+        playsound("hello.mp3")
+        time.sleep(3)
         begin = Bool
         begin.data = True
         test_begin_pub.publish(begin)
@@ -38,7 +42,7 @@ class MoveArmToOffset(smach.State):
     def __init__(self):
         smach.State.__init__(self, 
                              outcomes=['Offset Changed', 'Base Moved', 'all points tested'],
-                             input_keys=['offset', 'num'])
+                             input_keys=['offset', 'num', 'finished'])
 
     def execute(self, userdata):
         rospy.loginfo('Executing state Move Arm to Offset')
@@ -62,6 +66,7 @@ class MoveArmToOffset(smach.State):
         
         if userdata.num < 8:
             response = send_movement_client(chest_position, offset_point, odometry)
+            print(response)
             head_look_pub.publish(response.response.head_look)
             ik_pub.publish(response.response.ik_joint_state)
             if response.response.base_move.x != 0:
@@ -82,6 +87,7 @@ class MoveArmToOffset(smach.State):
                     pass
                 return 'Offset Changed'
         else:
+            test_finish_pub.publish(userdata.finished)
             return 'all points tested'
 
 class TestOP(smach.State):
@@ -93,17 +99,18 @@ class TestOP(smach.State):
         
     def execute(self, userdata):
         rospy.loginfo("Testing OP Position at Offset [%s, %s, %s]"%(userdata.offset[userdata.num, 0],userdata.offset[userdata.num, 1],userdata.offset[userdata.num, 2]))
+        chest_location_initial = rospy.wait_for_message("mrn_vision/openpose/movo/chest", PointStamped)
         tts = gtts.gTTS("Please touch my hand")
         tts.save("touchmyhand.mp3")
         playsound("touchmyhand.mp3")
         time.sleep(3)
-        while True:
-            wrist_location = rospy.wait_for_message("mrn_vision/openpose/movo/wrist_right", PointStamped)
-            if wrist_location.point.x > 0 and wrist_location.point.y > 0 and wrist_location.point.z > 0:
-                break
+        wrist_location = rospy.wait_for_message("mrn_vision/openpose/movo/wrist_right", PointStamped)
         wrist_location = wrist_location.point
         chest_location = rospy.wait_for_message("mrn_vision/openpose/movo/chest", PointStamped)
         chest_location = chest_location.point
+        
+        delta_chest = chest_location_initial.point.x - chest_location.x
+        
         offset_point = PointStamped()
         offset_point.header.stamp = rospy.Time.now()
         offset_point.point.x = userdata.offset[userdata.num, 0] + chest_location.x
@@ -111,17 +118,22 @@ class TestOP(smach.State):
         offset_point.point.z = userdata.offset[userdata.num, 2] + chest_location.z
         euc_dist = math.sqrt((offset_point.point.x-wrist_location.x)**2 + (offset_point.point.y-wrist_location.y)**2 + (offset_point.point.z-wrist_location.z)**2)
         
-        if euc_dist < 0.25:
-            tts = gtts.gTTS("Good job")
+        if euc_dist < 0.25 and abs(delta_chest) < 0.1:
+            tts = gtts.gTTS("Good job, sit back and relax")
             tts.save("goodjob.mp3")
             playsound("goodjob.mp3")
             userdata.num += 1
             return 'true'
+        elif euc_dist < 0.25 and abs(delta_chest) > 0.1:
+            tts = gtts.gTTS("Please relax and we will try again")
+            tts.save("tryagain.mp3")
+            playsound("tryagain.mp3")
+            return 'false'
         else:
             userdata.offset[userdata.num, 0] = (offset_point.point.x + wrist_location.x)/2 - chest_location.x
             userdata.offset[userdata.num, 1] = (offset_point.point.y + wrist_location.y)/2 - chest_location.y
             userdata.offset[userdata.num, 2] = (offset_point.point.z + wrist_location.z)/2 - chest_location.z
-            tts = gtts.gTTS("Wait to try again")
+            tts = gtts.gTTS("Please relax and we will try again")
             tts.save("tryagain.mp3")
             playsound("tryagain.mp3")
             return 'false'
@@ -136,9 +148,6 @@ class Finish(smach.State):
         tts = gtts.gTTS("Thank you for testing today! You have done a great job")
         tts.save("finish.mp3")
         playsound("finish.mp3")
-        test_finished = userdata.finished
-        test_finished.data = True
-        test_finish_pub.publish(test_finished)
         return 'finish'
 
 if __name__ == '__main__':
@@ -168,6 +177,7 @@ if __name__ == '__main__':
                                              [-0.75, 0.35, 0.45],
                                              [-0.75, 0.65, 0.45]])
     sm_workspace.userdata.finished = Bool()
+    sm_workspace.userdata.finished.data = True
     
     # Open the container
     with sm_workspace:

@@ -11,11 +11,20 @@ from nav_msgs.msg import Odometry
 from std_msgs.msg import Float64
 import message_filters
 import math
+import numpy as np
 
 import gtts
 from playsound import playsound
 
 if __name__=="__main__":
-    # tts = gtts.gTTS("Please touch my hand")
-    # tts.save("touchmyhand.mp3")
-    playsound("touchmyhand.mp3")
+    a = np.array([[True],
+                  [True],
+                  [False],
+                  [False]])
+    
+    b = np.array([[True],
+                  [False],
+                  [True],
+                  [False]])
+    
+    print(np.logical_and(a,b))

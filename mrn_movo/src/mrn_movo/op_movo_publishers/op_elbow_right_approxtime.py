@@ -33,7 +33,7 @@ if __name__ == '__main__':
     rospy.init_node('op_movo_elbow_right', anonymous=True)
 
     # # Publish Transformed OpenPose Keypoints
-    elbow_right_op_pub =    rospy.Publisher('mrn_vision/openpose/movo/elbow_right', PointStamped, queue_size=1)
+    elbow_right_op_pub =    rospy.Publisher('/mrn_vision/openpose/movo/elbow_right', PointStamped, queue_size=1)
     elbow_right_pos_sub =   message_filters.Subscriber("/mrn_vision/openpose/body/elbow_right", PointStamped)
     head_joints_sub =       message_filters.Subscriber('/movo/head/joint_states', JointState)
     linearAct_joints_sub =  message_filters.Subscriber('/movo/linear_actuator/joint_states', JointState)
