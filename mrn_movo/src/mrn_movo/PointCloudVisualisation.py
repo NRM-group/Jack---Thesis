@@ -71,7 +71,7 @@ def pcl_to_pca(pcl):
     plt.show()
     
 if __name__ == "__main__":
-    X_raw = np.genfromtxt(r'/home/medrobotics/jack_ws/src/mrn_movo/data/test_miguel_3_saved.csv', delimiter=',')
+    X_raw = np.genfromtxt(r'/home/medrobotics/jack_ws/src/mrn_movo/data/test_jack_2.csv', delimiter=',')
     X_raw_chest = X_raw[1:, :3]
     X_raw_wrist_left = X_raw[1:, 3:6]
     X_raw_wrist_right = X_raw[1:, 6:9]
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     # hullToSurface(ConvexHull(X_filt)).plot()
     
     # visualise_pcl(X_raw_chest_wrist_right)
-    # visualise_pcl(X_filt)
+    visualise_pcl(X_filt)
 
     
     pcd = o3d.geometry.PointCloud()

@@ -100,7 +100,7 @@ class TestOP(smach.State):
     def execute(self, userdata):
         rospy.loginfo("Testing OP Position at Offset [%s, %s, %s]"%(userdata.offset[userdata.num, 0],userdata.offset[userdata.num, 1],userdata.offset[userdata.num, 2]))
         chest_location_initial = rospy.wait_for_message("mrn_vision/openpose/movo/chest", PointStamped)
-        tts = gtts.gTTS("Please touch my hand")
+        tts = gtts.gTTS("Please touch and hold my hand")
         tts.save("touchmyhand.mp3")
         playsound("touchmyhand.mp3")
         time.sleep(3)
@@ -125,7 +125,7 @@ class TestOP(smach.State):
             userdata.num += 1
             return 'true'
         elif euc_dist < 0.25 and abs(delta_chest) > 0.1:
-            tts = gtts.gTTS("Please relax and we will try again")
+            tts = gtts.gTTS("Please sit back, relax, and we will try again")
             tts.save("tryagain.mp3")
             playsound("tryagain.mp3")
             return 'false'
