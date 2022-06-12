@@ -12,7 +12,7 @@ Project Commencement: July 2021
 
 # Project Description
 
-The project aims to assess the 3D reachable workspace of a 
+The project aims to assess the 3D reachable workspace of a stroke patient through robotic instruction and computer vision.
 
 # Installation
 
@@ -43,6 +43,8 @@ Enter root of catkin workspace and run catkin_make
 cd ~/catkin_ws
 catkin_make
 ```
+Install [Bio_IK](https://github.com/TAMS-Group/bio_ik) and [Bio_IK_Service](https://github.com/TAMS-Group/bio_ik_service)
+
 Follow the [Kinova steps](https://github.com/Kinovarobotics/kinova-movo/wiki/2.-How-Tos#establish-communication-between-remote-development-pc-and-movo) for establishing communication between a remote development PC and MOVO
 
 ## Running the protocol
