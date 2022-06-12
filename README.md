@@ -36,7 +36,7 @@ mkdir ./src && src ./src
 ```
 Clone this repository
 ```
-git clone 
+git clone https://github.com/jackmcnamarauq/thesis.git
 ```
 Enter root of catkin workspace and run catkin_make
 ```
