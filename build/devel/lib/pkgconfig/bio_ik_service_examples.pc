@@ -1,8 +1,0 @@
-prefix=/home/medrobotics/jack_ws/src/build/devel
-
-Name: bio_ik_service_examples
-Description: Description of bio_ik_service_examples
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: rospy bio_ik_msgs

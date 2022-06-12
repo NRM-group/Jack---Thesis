@@ -1,8 +1,0 @@
-prefix=/home/medrobotics/jack_ws/src/build/devel
-
-Name: kinect_streamer_bin
-Description: Description of kinect_streamer_bin
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib -lkinect_streamer_lib
-Requires: 

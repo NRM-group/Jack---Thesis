@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: mrn_movo
-Description: Description of mrn_movo
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

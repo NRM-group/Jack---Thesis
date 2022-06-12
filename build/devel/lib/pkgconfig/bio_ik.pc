@@ -1,8 +1,0 @@
-prefix=/home/medrobotics/jack_ws/src/build/devel
-
-Name: bio_ik
-Description: Description of bio_ik
-Version: 1.0.0
-Cflags: -I/home/medrobotics/jack_ws/src/bio_ik/include
-Libs: -L${prefix}/lib -lbio_ik
-Requires: eigen_conversions moveit_core moveit_ros_planning pluginlib roscpp tf2 tf2_kdl tf2_geometry_msgs

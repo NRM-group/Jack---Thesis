@@ -1,8 +1,0 @@
-prefix=/home/medrobotics/jack_ws/src/build/devel
-
-Name: bio_ik_msgs
-Description: Description of bio_ik_msgs
-Version: 0.0.0
-Cflags: -I/home/medrobotics/jack_ws/src/build/devel/include
-Libs: -L${prefix}/lib 
-Requires: message_runtime

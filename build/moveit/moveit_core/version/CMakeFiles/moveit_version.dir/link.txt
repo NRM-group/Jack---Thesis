@@ -1,1 +1,0 @@
-/usr/bin/c++  -g  -rdynamic CMakeFiles/moveit_version.dir/version.cpp.o  -o ../../../devel/lib/moveit_core/moveit_version 

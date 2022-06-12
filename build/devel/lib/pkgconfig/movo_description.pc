@@ -1,8 +1,0 @@
-prefix=/home/medrobotics/jack_ws/src/build/devel
-
-Name: movo_description
-Description: Description of movo_description
-Version: 1.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

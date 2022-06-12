@@ -1,2 +1,0 @@
-set(bio_ik_msgs_MESSAGE_FILES "msg/AvoidJointLimitsGoal.msg;msg/BalanceGoal.msg;msg/CenterJointsGoal.msg;msg/ConeGoal.msg;msg/DirectionGoal.msg;msg/IKRequest.msg;msg/IKResponse.msg;msg/JointVariableGoal.msg;msg/LineGoal.msg;msg/LookAtGoal.msg;msg/MaxDistanceGoal.msg;msg/MinDistanceGoal.msg;msg/MinimalDisplacementGoal.msg;msg/OrientationGoal.msg;msg/PoseGoal.msg;msg/PositionGoal.msg;msg/SideGoal.msg;msg/TouchGoal.msg")
-set(bio_ik_msgs_SERVICE_FILES "srv/GetIK.srv")
